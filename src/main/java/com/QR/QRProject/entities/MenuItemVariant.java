@@ -10,11 +10,7 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @AllArgsConstructor
 @Table(name = "menu_item_variants")
-public class MenuItemVariant {
-
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+public class MenuItemVariant extends BaseEntity{
 
     private String name;
     private Double price;

@@ -13,11 +13,7 @@ import java.util.List;
 @NoArgsConstructor
 @AllArgsConstructor
 @Table(name = "menu_items")
-public class MenuItem {
-
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+public class MenuItem  extends BaseEntity{
 
     private String name;
     private String description;
