@@ -17,7 +17,6 @@ public class MenuItem  extends BaseEntity{
 
     private String name;
     private String description;
-    private Double price;
     private Boolean active = true;
 
     private String imageUrl;
