@@ -1,6 +1,5 @@
 package com.QR.QRProject.security;
 
-
 import com.QR.QRProject.entities.User;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.JwtException;
@@ -24,11 +23,10 @@ public class JwtUtil {
         return Keys.hmacShaKeyFor(SECRET_KEY.getBytes());
     }
 
-    // --- TOKEN ÜRET ---
     public String generateToken(User user) {
-
         Map<String, Object> claims = new HashMap<>();
         claims.put("role", user.getRole().name());
+        claims.put("companyId", user.getCompany().getId());
 
         return Jwts.builder()
                 .setClaims(claims)
@@ -39,12 +37,14 @@ public class JwtUtil {
                 .compact();
     }
 
-    // --- USERNAME ÇIKAR ---
     public String extractUsername(String token) {
         return extractClaims(token).getSubject();
     }
 
-    // --- EXP DATE vs. ---
+    public Long extractCompanyId(String token) {
+        return extractClaims(token).get("companyId", Long.class);
+    }
+
     public boolean isTokenValid(String token) {
         try {
             extractClaims(token);

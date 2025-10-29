@@ -1,15 +1,14 @@
 package com.QR.QRProject.services.Impl;
 
 import com.QR.QRProject.dtos.*;
-import com.QR.QRProject.entities.Menu;
-import com.QR.QRProject.entities.MenuItem;
-import com.QR.QRProject.entities.MenuItemVariant;
-import com.QR.QRProject.repositories.MenuItemRepository;
-import com.QR.QRProject.repositories.MenuItemVariantRepository;
-import com.QR.QRProject.repositories.MenuRepository;
+import com.QR.QRProject.entities.*;
+import com.QR.QRProject.repositories.*;
+import com.QR.QRProject.security.JwtUtil;
 import com.QR.QRProject.services.MenuService;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
@@ -28,6 +27,14 @@ public class MenuServiceImpl implements MenuService {
     @Autowired
     private MenuItemVariantRepository menuItemVariantRepository;
 
+    @Autowired
+    private JwtUtil jwtUtil;
+
+    @Autowired
+    private CompanyRepository companyRepository;
+
+    @Autowired
+    private UserRepository userRepository;
 
     @Override
     public List<MenuDto> findAllByCompanyId(Long companyId) {
@@ -67,6 +74,9 @@ public class MenuServiceImpl implements MenuService {
                 })
                 .toList();
     }
+
+
+
 
 
     @Override
@@ -109,5 +119,38 @@ public class MenuServiceImpl implements MenuService {
         return resultDto;
     }
 
+    @Override
+    public MenuDto saveMenu(MenuDtoIU menuDtoIU) {
+        if (menuDtoIU == null) return null;
+
+        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+        String email = auth.getName();
+
+        User user = userRepository.findByEmail(email).orElseThrow(() -> new RuntimeException("User not found"));
+
+        Long companyId = user.getCompany().getId();
+
+        Menu menu = new Menu();
+        menu.setCompany(user.getCompany());
+        menu.setTitle(menuDtoIU.getTitle());
+        menu.setDescription(menuDtoIU.getDescription());
+        menu.setImageUrl(menuDtoIU.getImageUrl());
+
+        Menu savedMenu = menuRepository.save(menu);
+
+        MenuDto resultDto = new MenuDto();
+        BeanUtils.copyProperties(savedMenu, resultDto);
+        return resultDto;
+    }
+
+    @Override
+    public boolean removeMenuById(Long menuId) {
+        Menu menu = menuRepository.findById(menuId).orElse(null);
+        if (menu != null) {
+            menuRepository.delete(menu);
+            return true;
+        }
+        return false;
+    }
 
 }
