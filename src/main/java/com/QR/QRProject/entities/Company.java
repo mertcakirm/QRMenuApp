@@ -20,7 +20,8 @@ public class Company extends BaseEntity {
     private String phone;
     private String address;
 
-    private String logoUrl;
+    @Column(columnDefinition = "LONGTEXT")
+    private String base64Image;
 
     @OneToMany(mappedBy = "company", cascade = CascadeType.ALL)
     private List<Menu> menus = new ArrayList<>();

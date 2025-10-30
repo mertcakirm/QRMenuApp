@@ -18,8 +18,8 @@ public class Menu extends BaseEntity {
     private String title;
     private String description;
 
-    private String qrCodeUrl;
-    private String imageUrl;
+    @Column(columnDefinition = "LONGTEXT")
+    private String base64Image;
 
     @ManyToOne
     @JoinColumn(name = "company_id")

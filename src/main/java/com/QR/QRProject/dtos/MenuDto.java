@@ -6,5 +6,5 @@ import lombok.Data;
 public class MenuDto {
     private Long id;
     private String title;
-    private String imageUrl;
+    private String base64Image;
 }

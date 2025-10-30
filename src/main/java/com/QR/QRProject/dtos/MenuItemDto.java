@@ -9,6 +9,6 @@ public class MenuItemDto {
     private Long id;
     private String name;
     private String description;
-    private String imageUrl;
+    private String base64Image;
     private List<MenuItemVariantDto> variants;
 }

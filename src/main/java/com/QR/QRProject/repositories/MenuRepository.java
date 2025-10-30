@@ -10,4 +10,5 @@ import java.util.Optional;
 @Repository
 public interface MenuRepository extends JpaRepository<Menu,Long> {
     List<Menu> findAllByCompanyId(Long companyId);
+    List<Menu> findAllByCompanyName(String companyName);
 }

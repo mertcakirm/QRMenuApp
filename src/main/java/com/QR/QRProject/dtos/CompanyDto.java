@@ -9,5 +9,5 @@ public class CompanyDto {
     private String email;
     private String phone;
     private String address;
-    private String logoUrl;
+    private String base64Image;
 }

@@ -19,7 +19,9 @@ public class MenuItem  extends BaseEntity{
     private String description;
     private Boolean active = true;
 
-    private String imageUrl;
+    @Lob
+    @Column(columnDefinition = "LONGTEXT")
+    private String base64Image;
 
     @ManyToOne
     @JoinColumn(name = "menu_id")

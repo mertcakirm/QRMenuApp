@@ -51,6 +51,20 @@ public class MenuServiceImpl implements MenuService {
     }
 
     @Override
+    public List<MenuDto> findAllByCompanyName(String companyName) {
+
+        List<Menu> menuDb = menuRepository.findAllByCompanyName(companyName);
+
+        return menuDb.stream()
+                .map(menu -> {
+                    MenuDto dto = new MenuDto();
+                    BeanUtils.copyProperties(menu, dto);
+                    return dto;
+                })
+                .toList();
+    }
+
+    @Override
     public List<MenuItemDto> findAllItemsByMenuId(Long menuId) {
         List<MenuItem> menuItems = menuItemRepository.findAllByMenuId(menuId);
 
@@ -74,8 +88,6 @@ public class MenuServiceImpl implements MenuService {
                 })
                 .toList();
     }
-
-
 
 
 
@@ -128,13 +140,11 @@ public class MenuServiceImpl implements MenuService {
 
         User user = userRepository.findByEmail(email).orElseThrow(() -> new RuntimeException("User not found"));
 
-        Long companyId = user.getCompany().getId();
-
         Menu menu = new Menu();
         menu.setCompany(user.getCompany());
         menu.setTitle(menuDtoIU.getTitle());
         menu.setDescription(menuDtoIU.getDescription());
-        menu.setImageUrl(menuDtoIU.getImageUrl());
+        menu.setBase64Image(menuDtoIU.getBase64Image());
 
         Menu savedMenu = menuRepository.save(menu);
 
