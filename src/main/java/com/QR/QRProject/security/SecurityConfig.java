@@ -28,46 +28,58 @@ public class SecurityConfig {
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http
-                .csrf(csrf -> csrf.disable())  // CSRF devre dışı
-                .cors(cors -> cors.configurationSource(corsConfigurationSource())) // CORS
-                .sessionManagement(sess -> sess.sessionCreationPolicy(SessionCreationPolicy.STATELESS)) // JWT stateless
+                // CORS ve CSRF
+                .cors(cors -> cors.configurationSource(corsConfigurationSource()))
+                .csrf(csrf -> csrf.disable())
+
+                // Stateless JWT
+                .sessionManagement(sess -> sess.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
+
+                // Yetkilendirme
                 .authorizeHttpRequests(auth -> auth
-                        // Public endpointler
-                        .requestMatchers("/api/auth/**").permitAll()
-                        .requestMatchers("/api/menu/get-all/**").permitAll()
-                        .requestMatchers("/api/menu/get-all-by-name/**").permitAll()
-                        .requestMatchers("/api/menu/get-by-menuId/**").permitAll()
-                        .requestMatchers("/api/qr/**").permitAll()
-                        .requestMatchers("/v3/api-docs/**", "/swagger-ui/**", "/swagger-ui.html").permitAll()
-                        // Diğer tüm endpointler token ister
+                        .requestMatchers(
+                                "/api/auth/login/**",
+                                "/api/auth/register/**",
+                                "/api/menu/get-all-by-name/**",
+                                "/api/menu/get-by-menuId/**",
+                                "/api/qr/**",
+                                "/v3/api-docs/**",
+                                "/swagger-ui/**",
+                                "/swagger-ui.html"
+                        ).permitAll()
                         .anyRequest().authenticated()
                 )
-                // JWT filtresini UsernamePasswordAuthenticationFilter'den önce ekle
+
+                // JWT filtresi (login dışında her istekte)
                 .addFilterBefore(jwtAuthFilter, UsernamePasswordAuthenticationFilter.class);
 
         return http.build();
     }
 
-    // JWT veya login token kontrolleri için password encoder
     @Bean
     public PasswordEncoder passwordEncoder() {
         return new BCryptPasswordEncoder();
     }
 
-    // AuthenticationManager bean'i
     @Bean
     public AuthenticationManager authenticationManager(AuthenticationConfiguration config) throws Exception {
         return config.getAuthenticationManager();
     }
 
-    // CORS ayarları (Swagger ve frontend için)
+    // 🌍 Global CORS yapılandırması
     @Bean
     public CorsConfigurationSource corsConfigurationSource() {
         CorsConfiguration configuration = new CorsConfiguration();
-        configuration.setAllowedOriginPatterns(List.of("*")); // tüm domainlere izin
+        configuration.setAllowedOrigins(List.of(
+                "http://localhost:5173",
+                "http://127.0.0.1:5173",
+                "http://213.142.159.49:8083"
+        ));
         configuration.setAllowedMethods(List.of("GET", "POST", "PUT", "DELETE", "OPTIONS"));
-        configuration.setAllowedHeaders(List.of("*"));
+        configuration.setAllowedHeaders(List.of("Authorization", "Content-Type", "Accept"));
+        configuration.setExposedHeaders(List.of("Authorization"));
         configuration.setAllowCredentials(true);
+
         UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
         source.registerCorsConfiguration("/**", configuration);
         return source;

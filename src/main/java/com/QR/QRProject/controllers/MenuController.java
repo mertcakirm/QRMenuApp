@@ -1,9 +1,6 @@
 package com.QR.QRProject.controllers;
 
-import com.QR.QRProject.dtos.MenuDto;
-import com.QR.QRProject.dtos.MenuDtoIU;
-import com.QR.QRProject.dtos.MenuItemDto;
-import com.QR.QRProject.dtos.MenuItemDtoIU;
+import com.QR.QRProject.dtos.*;
 import com.QR.QRProject.services.MenuItemService;
 import com.QR.QRProject.services.MenuService;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
@@ -22,9 +19,9 @@ public class MenuController {
     @Autowired
     private MenuItemService menuItemService;
 
-    @GetMapping("get-all/{companyId}")
-    public List<MenuDto> getAll(@PathVariable Long companyId) {
-        return menuService.findAllByCompanyId(companyId);
+    @GetMapping("get-all")
+    public List<MenuDto> getAll() {
+        return menuService.findAllByToken();
     }
 
     @GetMapping("get-all-by-name/{companyName}")
@@ -33,8 +30,8 @@ public class MenuController {
     }
 
     @GetMapping("get-by-menuId/{menuId}")
-    public List<MenuItemDto> getByMenuId(@PathVariable Long menuId) {
-        return menuService.findAllItemsByMenuId(menuId);
+    public MenuWithItemsDto getByMenuId(@PathVariable Long menuId) {
+        return menuService.findMenuWithItems(menuId);
     }
 
     @PostMapping("add-menu-item")
@@ -49,7 +46,7 @@ public class MenuController {
         return menuService.saveMenu(menuDtoIU);
     }
 
-    @DeleteMapping("delete/{menuItemId}")
+    @DeleteMapping("delete-item/{menuItemId}")
     @SecurityRequirement(name = "bearerAuth")
     public boolean deleteMenuItem(@PathVariable Long menuItemId) {
         return menuItemService.removeMenuItemById(menuItemId);

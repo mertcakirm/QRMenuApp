@@ -11,6 +11,8 @@ import com.QR.QRProject.security.Sha256Util;
 import com.QR.QRProject.services.UserService;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -82,6 +84,31 @@ public class UserServiceImpl implements UserService {
         result.setCompany(companyDto);
 
         return result;
+    }
+
+    @Override
+    public UserDto getMe() {
+
+        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+        String email = auth.getName();
+
+        User user = userRepository.findByEmail(email)
+                .orElseThrow(() -> new RuntimeException("User not found"));
+
+        return userRepository.findById(user.getId())
+                .map(u -> {
+                    UserDto dto = new UserDto();
+                    BeanUtils.copyProperties(u, dto);
+
+                    if (u.getCompany() != null) {
+                        CompanyDto companyDto = new CompanyDto();
+                        BeanUtils.copyProperties(u.getCompany(), companyDto);
+                        dto.setCompany(companyDto);
+                    }
+
+                    return dto;
+                })
+                .orElseThrow(() -> new RuntimeException("User not found by id"));
     }
 
 }

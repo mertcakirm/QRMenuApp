@@ -4,4 +4,5 @@ import com.QR.QRProject.dtos.LoginDto;
 
 public interface AuthService {
     String login(LoginDto dto);
+    String checkRole();
 }

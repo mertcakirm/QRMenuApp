@@ -28,6 +28,11 @@ public class UserController {
                 .orElseThrow(() -> new RuntimeException("User not found"));
     }
 
+    @GetMapping("/get-me")
+    public UserDto findMe(){
+        return userService.getMe();
+    }
+
     @PostMapping
     public UserDto create(@RequestBody UserDtoIU userDtoIU){
         return userService.createUser(userDtoIU);

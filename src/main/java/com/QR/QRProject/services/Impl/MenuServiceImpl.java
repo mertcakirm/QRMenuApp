@@ -37,9 +37,15 @@ public class MenuServiceImpl implements MenuService {
     private UserRepository userRepository;
 
     @Override
-    public List<MenuDto> findAllByCompanyId(Long companyId) {
+    public List<MenuDto> findAllByToken() {
 
-        List<Menu> menuDb = menuRepository.findAllByCompanyId(companyId);
+        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+        String email = auth.getName();
+
+        User user = userRepository.findByEmail(email).orElseThrow(() -> new RuntimeException("User not found"));
+
+
+        List<Menu> menuDb = menuRepository.findAllByCompanyId(user.getCompany().getId());
 
         return menuDb.stream()
                 .map(menu -> {
@@ -65,10 +71,20 @@ public class MenuServiceImpl implements MenuService {
     }
 
     @Override
-    public List<MenuItemDto> findAllItemsByMenuId(Long menuId) {
+    public MenuWithItemsDto findMenuWithItems(Long menuId) {
+        Menu menu = menuRepository.findById(menuId)
+                .orElseThrow(() -> new RuntimeException("Menu not found"));
         List<MenuItem> menuItems = menuItemRepository.findAllByMenuId(menuId);
 
-        return menuItems.stream()
+        // Ana DTO
+        MenuWithItemsDto menuDto = new MenuWithItemsDto();
+        menuDto.setId(menu.getId());
+        menuDto.setName(menu.getTitle());
+        menuDto.setDescription(menu.getDescription());
+        menuDto.setBase64Image(menu.getBase64Image());
+
+        // Ürünleri dönüştür
+        List<MenuItemDto> itemDtos = menuItems.stream()
                 .map(menuItem -> {
                     MenuItemDto dto = new MenuItemDto();
                     BeanUtils.copyProperties(menuItem, dto);
@@ -87,6 +103,10 @@ public class MenuServiceImpl implements MenuService {
                     return dto;
                 })
                 .toList();
+
+        menuDto.setItems(itemDtos);
+
+        return menuDto;
     }
 
 

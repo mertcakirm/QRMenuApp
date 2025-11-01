@@ -11,4 +11,5 @@ public interface UserService {
     List<UserDto> findAll();
     Optional<UserDto> findbyUserId(Long id);
     UserDto createUser(UserDtoIU userDto);
+    UserDto getMe();
 }

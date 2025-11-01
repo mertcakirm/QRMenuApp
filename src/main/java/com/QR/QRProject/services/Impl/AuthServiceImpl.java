@@ -7,6 +7,8 @@ import com.QR.QRProject.security.JwtUtil;
 import com.QR.QRProject.security.Sha256Util;
 import com.QR.QRProject.services.AuthService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
 @Service
@@ -29,5 +31,17 @@ public class AuthServiceImpl implements AuthService {
 
         return jwt.generateToken(user);
     }
+
+    @Override
+    public String checkRole() {
+
+        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+
+        var user =  userRepository.findByEmail(auth.getName());
+
+        var roleName = user.get().getRole().toString();
+        return roleName;
+    }
+
 
 }
