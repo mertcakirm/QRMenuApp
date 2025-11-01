@@ -1,6 +1,7 @@
 package com.QR.QRProject.services.Impl;
 
 import com.QR.QRProject.dtos.CompanyDto;
+import com.QR.QRProject.dtos.CompanyUpdateDto;
 import com.QR.QRProject.dtos.UserDto;
 import com.QR.QRProject.dtos.UserDtoIU;
 import com.QR.QRProject.entities.Company;
@@ -13,6 +14,7 @@ import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -25,6 +27,8 @@ public class UserServiceImpl implements UserService {
     private UserRepository userRepository;
     @Autowired
     private CompanyRepository companyRepository;
+    @Autowired
+    private PasswordEncoder passwordEncoder;
 
     @Override
     public List<UserDto> findAll() {
@@ -109,6 +113,86 @@ public class UserServiceImpl implements UserService {
                     return dto;
                 })
                 .orElseThrow(() -> new RuntimeException("User not found by id"));
+    }
+
+    @Override
+    public boolean deleteUser(Long userId) {
+        Optional<User> userOpt = userRepository.findById(userId);
+        if (userOpt.isEmpty()) return false;
+
+        userRepository.delete(userOpt.get());
+        return true;
+    }
+
+    @Override
+    public boolean updateProfilePhoto(String base64Image) {
+        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+        String email = auth.getName();
+
+        User user = userRepository.findByEmail(email)
+                .orElseThrow(() -> new RuntimeException("User not found"));
+
+        Company company = user.getCompany();
+        if (company == null) {
+            throw new RuntimeException("Company not found for this user");
+        }
+
+        company.setBase64Image(base64Image);
+        companyRepository.save(company);
+
+        return true;
+    }
+
+    @Override
+    public CompanyDto updateCompany(CompanyUpdateDto companyDto) {
+        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+        String email = auth.getName();
+
+        User user = userRepository.findByEmail(email)
+                .orElseThrow(() -> new RuntimeException("User not found"));
+
+        Company company = user.getCompany();
+        if (company == null) {
+            throw new RuntimeException("Company not found for this user");
+        }
+
+        company.setName(companyDto.getName());
+        company.setAddress(companyDto.getAddress());
+        company.setPhone(companyDto.getPhone());
+        company.setEmail(companyDto.getEmail());
+
+        Company savedCompany = companyRepository.save(company);
+
+        CompanyDto dto = new CompanyDto();
+        dto.setId(savedCompany.getId());
+        dto.setName(savedCompany.getName());
+        dto.setEmail(savedCompany.getEmail());
+        dto.setPhone(savedCompany.getPhone());
+        dto.setAddress(savedCompany.getAddress());
+        dto.setBase64Image(savedCompany.getBase64Image());
+
+        return dto;
+    }
+
+    @Override
+    public boolean changePassword(String oldPassword, String newPassword) {
+        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+        String email = auth.getName();
+
+        User user = userRepository.findByEmail(email)
+                .orElseThrow(() -> new RuntimeException("User not found"));
+
+        String hashedOldPassword = Sha256Util.hash(oldPassword);
+
+        if (!hashedOldPassword.equals(user.getPassword())) {
+            throw new RuntimeException("Eski şifre yanlış!");
+        }
+
+        String hashedNewPassword = Sha256Util.hash(newPassword);
+        user.setPassword(hashedNewPassword);
+        userRepository.save(user);
+
+        return true;
     }
 
 }

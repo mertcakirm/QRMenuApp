@@ -1,10 +1,10 @@
 package com.QR.QRProject.controllers;
 
 
-import com.QR.QRProject.dtos.UserDto;
-import com.QR.QRProject.dtos.UserDtoIU;
+import com.QR.QRProject.dtos.*;
 import com.QR.QRProject.services.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -36,5 +36,41 @@ public class UserController {
     @PostMapping
     public UserDto create(@RequestBody UserDtoIU userDtoIU){
         return userService.createUser(userDtoIU);
+    }
+
+    @DeleteMapping("/{id}")
+    public ResponseEntity<String> deleteUser(@PathVariable Long id) {
+        boolean deleted = userService.deleteUser(id);
+        if (deleted) {
+            return ResponseEntity.ok("Kullanıcı ve bağlı şirket + menüler silindi.");
+        } else {
+            return ResponseEntity.status(404).body("Kullanıcı bulunamadı.");
+        }
+    }
+
+    @PutMapping("/photo")
+    public ResponseEntity<?> updateProfilePhoto(@RequestBody String base64Image) {
+        boolean updated = userService.updateProfilePhoto(base64Image);
+
+        if (updated) {
+            return ResponseEntity.ok("Logo başarıyla güncellendi");
+        } else {
+            return ResponseEntity.status(500).body("Logo güncellenemedi");
+        }
+    }
+
+    @PutMapping("/update/company")
+    public ResponseEntity<CompanyDto> updateCompany(@RequestBody CompanyUpdateDto companyDto) {
+        CompanyDto updated = userService.updateCompany(companyDto);
+        return ResponseEntity.ok(updated);
+    }
+
+    @PutMapping("/change-password")
+    public ResponseEntity<?> changePassword(@RequestBody PasswordChangeDto dto) {
+        boolean result = userService.changePassword(dto.getOldPassword(), dto.getNewPassword());
+        if (result) {
+            return ResponseEntity.ok("Şifre başarıyla değiştirildi.");
+        }
+        return ResponseEntity.badRequest().body("Şifre değiştirilemedi.");
     }
 }

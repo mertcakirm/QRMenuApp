@@ -17,7 +17,7 @@ public class User extends BaseEntity{
     private String password;
     private Role role = Role.COMPANY;
 
-    @ManyToOne
+    @ManyToOne(cascade = CascadeType.REMOVE)
     @JoinColumn(name = "company_id")
     private Company company;
 }
