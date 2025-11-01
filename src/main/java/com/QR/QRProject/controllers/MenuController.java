@@ -25,7 +25,7 @@ public class MenuController {
     }
 
     @GetMapping("get-all-by-name/{companyName}")
-    public List<MenuDto> getAllByName(@PathVariable String companyName) {
+    public MenuWithCompanyDto getAllByName(@PathVariable String companyName) {
         return menuService.findAllByCompanyName(companyName);
     }
 

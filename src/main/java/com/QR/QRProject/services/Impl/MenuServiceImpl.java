@@ -13,6 +13,7 @@ import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 
 @Service
@@ -57,17 +58,32 @@ public class MenuServiceImpl implements MenuService {
     }
 
     @Override
-    public List<MenuDto> findAllByCompanyName(String companyName) {
+    public MenuWithCompanyDto findAllByCompanyName(String companyName) {
+        // Optional ile çağırıyoruz
+        Optional<Company> optionalCompany = companyRepository.findByName(companyName);
+        if (optionalCompany.isEmpty()) return null;
 
-        List<Menu> menuDb = menuRepository.findAllByCompanyName(companyName);
+        Company company = optionalCompany.get();
 
-        return menuDb.stream()
+        MenuWithCompanyDto dto = new MenuWithCompanyDto();
+        dto.setCompanyName(company.getName());
+        dto.setCompanyEmail(company.getEmail());
+        dto.setCompanyPhone(company.getPhone());
+        dto.setCompanyAddress(company.getAddress());
+
+        List<MenuDto> menuDtos = company.getMenus().stream()
                 .map(menu -> {
-                    MenuDto dto = new MenuDto();
-                    BeanUtils.copyProperties(menu, dto);
-                    return dto;
+                    MenuDto menuDto = new MenuDto();
+                    menuDto.setId(menu.getId());
+                    menuDto.setTitle(menu.getTitle());
+                    menuDto.setBase64Image(menu.getBase64Image());
+                    return menuDto;
                 })
                 .toList();
+
+        dto.setItems(menuDtos);
+
+        return dto;
     }
 
     @Override
@@ -76,14 +92,12 @@ public class MenuServiceImpl implements MenuService {
                 .orElseThrow(() -> new RuntimeException("Menu not found"));
         List<MenuItem> menuItems = menuItemRepository.findAllByMenuId(menuId);
 
-        // Ana DTO
         MenuWithItemsDto menuDto = new MenuWithItemsDto();
         menuDto.setId(menu.getId());
         menuDto.setName(menu.getTitle());
         menuDto.setDescription(menu.getDescription());
         menuDto.setBase64Image(menu.getBase64Image());
 
-        // Ürünleri dönüştür
         List<MenuItemDto> itemDtos = menuItems.stream()
                 .map(menuItem -> {
                     MenuItemDto dto = new MenuItemDto();

@@ -8,7 +8,7 @@ import java.util.List;
 
 public interface MenuService {
     List<MenuDto> findAllByToken();
-    List<MenuDto> findAllByCompanyName(String  companyName);
+    MenuWithCompanyDto findAllByCompanyName(String companyName);
     MenuWithItemsDto findMenuWithItems(Long menuId);
     MenuItemDto saveMenuItem(MenuItemDtoIU menuItemDto);
     MenuDto saveMenu(MenuDtoIU menuDtoIU);
