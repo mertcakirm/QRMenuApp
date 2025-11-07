@@ -1,5 +1,6 @@
-package com.QR.QRProject.dtos;
+package com.QR.QRProject.dtos.user;
 
+import com.QR.QRProject.dtos.company.CompanyDtoIU;
 import lombok.Data;
 
 @Data

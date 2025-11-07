@@ -1,6 +1,6 @@
 package com.QR.QRProject.services.Impl;
 
-import com.QR.QRProject.dtos.*;
+import com.QR.QRProject.dtos.menu.*;
 import com.QR.QRProject.entities.*;
 import com.QR.QRProject.repositories.*;
 import com.QR.QRProject.security.JwtUtil;

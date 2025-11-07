@@ -1,9 +1,9 @@
 package com.QR.QRProject.services.Impl;
 
-import com.QR.QRProject.dtos.CompanyDto;
-import com.QR.QRProject.dtos.CompanyUpdateDto;
-import com.QR.QRProject.dtos.UserDto;
-import com.QR.QRProject.dtos.UserDtoIU;
+import com.QR.QRProject.dtos.company.CompanyDto;
+import com.QR.QRProject.dtos.company.CompanyUpdateDto;
+import com.QR.QRProject.dtos.user.UserDto;
+import com.QR.QRProject.dtos.user.UserDtoIU;
 import com.QR.QRProject.entities.Company;
 import com.QR.QRProject.entities.User;
 import com.QR.QRProject.repositories.CompanyRepository;

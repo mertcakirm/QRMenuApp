@@ -1,10 +1,9 @@
 package com.QR.QRProject.services;
 
-import com.QR.QRProject.dtos.CompanyDto;
-import com.QR.QRProject.dtos.CompanyUpdateDto;
-import com.QR.QRProject.dtos.UserDto;
-import com.QR.QRProject.dtos.UserDtoIU;
-import com.QR.QRProject.entities.User;
+import com.QR.QRProject.dtos.company.CompanyDto;
+import com.QR.QRProject.dtos.company.CompanyUpdateDto;
+import com.QR.QRProject.dtos.user.UserDto;
+import com.QR.QRProject.dtos.user.UserDtoIU;
 
 import java.util.List;
 import java.util.Optional;

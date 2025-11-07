@@ -1,8 +1,7 @@
 package com.QR.QRProject.services;
 
 
-import com.QR.QRProject.dtos.*;
-import com.QR.QRProject.entities.Menu;
+import com.QR.QRProject.dtos.menu.*;
 
 import java.util.List;
 

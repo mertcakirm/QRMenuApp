@@ -1,5 +1,6 @@
-package com.QR.QRProject.dtos;
+package com.QR.QRProject.dtos.user;
 
+import com.QR.QRProject.dtos.company.CompanyDto;
 import com.QR.QRProject.enums.Role;
 import lombok.Data;
 

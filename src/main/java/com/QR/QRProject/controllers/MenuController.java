@@ -1,6 +1,6 @@
 package com.QR.QRProject.controllers;
 
-import com.QR.QRProject.dtos.*;
+import com.QR.QRProject.dtos.menu.*;
 import com.QR.QRProject.services.MenuItemService;
 import com.QR.QRProject.services.MenuService;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;

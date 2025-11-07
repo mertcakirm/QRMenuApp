@@ -4,7 +4,6 @@ import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-
 import java.util.ArrayList;
 import java.util.List;
 
@@ -13,7 +12,7 @@ import java.util.List;
 @NoArgsConstructor
 @AllArgsConstructor
 @Table(name = "menu_items")
-public class MenuItem  extends BaseEntity{
+public class MenuItem extends BaseEntity {
 
     private String name;
     private String description;
@@ -23,10 +22,12 @@ public class MenuItem  extends BaseEntity{
     @Column(columnDefinition = "LONGTEXT")
     private String base64Image;
 
+    // N Ürün → 1 Menü
     @ManyToOne
     @JoinColumn(name = "menu_id")
     private Menu menu;
 
-    @OneToMany(mappedBy = "menuItem", cascade = CascadeType.ALL)
+    // 1 Ürün → N Varyant
+    @OneToMany(mappedBy = "menuItem", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<MenuItemVariant> variants = new ArrayList<>();
 }

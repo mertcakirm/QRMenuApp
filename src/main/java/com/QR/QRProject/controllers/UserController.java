@@ -1,7 +1,11 @@
 package com.QR.QRProject.controllers;
 
 
-import com.QR.QRProject.dtos.*;
+import com.QR.QRProject.dtos.company.CompanyDto;
+import com.QR.QRProject.dtos.company.CompanyUpdateDto;
+import com.QR.QRProject.dtos.user.PasswordChangeDto;
+import com.QR.QRProject.dtos.user.UserDto;
+import com.QR.QRProject.dtos.user.UserDtoIU;
 import com.QR.QRProject.services.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;

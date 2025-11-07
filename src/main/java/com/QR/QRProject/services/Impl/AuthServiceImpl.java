@@ -1,6 +1,6 @@
 package com.QR.QRProject.services.Impl;
 
-import com.QR.QRProject.dtos.LoginDto;
+import com.QR.QRProject.dtos.user.LoginDto;
 import com.QR.QRProject.entities.User;
 import com.QR.QRProject.repositories.UserRepository;
 import com.QR.QRProject.security.JwtUtil;

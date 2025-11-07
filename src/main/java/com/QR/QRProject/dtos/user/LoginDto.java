@@ -1,4 +1,4 @@
-package com.QR.QRProject.dtos;
+package com.QR.QRProject.dtos.user;
 
 import lombok.Data;
 
