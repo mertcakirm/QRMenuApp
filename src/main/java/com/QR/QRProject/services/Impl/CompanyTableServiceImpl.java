@@ -1,6 +1,7 @@
 package com.QR.QRProject.services.Impl;
 
 import com.QR.QRProject.dtos.table.CompanyTablesDto;
+import com.QR.QRProject.dtos.table.TableDto;
 import com.QR.QRProject.entities.CompanyTable;
 import com.QR.QRProject.entities.User;
 import com.QR.QRProject.repositories.CompanyTableRepository;
@@ -41,6 +42,26 @@ public class CompanyTableServiceImpl implements CompanyTableService {
                     return dto;
                 })
                 .collect(Collectors.toList());
+    }
+
+    @Override
+    public TableDto saveTable(String tableName) {
+        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+        String email = auth.getName();
+
+        User user = userRepository.findByEmail(email).orElseThrow(() -> new RuntimeException("User not found"));
+
+        CompanyTable companyTable = new CompanyTable();
+        companyTable.setTableName(tableName);
+        companyTable.setAvailable(true);
+        companyTable.setCompany(user.getCompany());
+
+        CompanyTable result = companyTableRepository.save(companyTable);
+        TableDto dto =  new TableDto();
+        dto.setId(result.getId());
+        dto.setTableName(result.getTableName());
+
+        return dto;
     }
 
 }

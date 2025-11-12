@@ -14,7 +14,7 @@ public class WebConfig {
             @Override
             public void addCorsMappings(CorsRegistry registry) {
                 registry.addMapping("/**") // tüm endpointler
-                        .allowedOrigins("http://localhost:3000", "http://213.142.159.49:8083") // frontend URL'leri
+                        .allowedOrigins("http://localhost:3000", "http://213.142.159.49:8083")
                         .allowedMethods("GET", "POST", "PUT", "DELETE", "OPTIONS")
                         .allowedHeaders("*")
                         .exposedHeaders("Authorization")
