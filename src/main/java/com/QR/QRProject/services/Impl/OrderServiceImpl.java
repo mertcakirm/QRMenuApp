@@ -4,9 +4,11 @@ import com.QR.QRProject.dtos.menu.MenuItemVariantDto;
 import com.QR.QRProject.dtos.order.OrderDto;
 import com.QR.QRProject.dtos.order.OrderDtoIU;
 import com.QR.QRProject.dtos.order.OrderItemDto;
+import com.QR.QRProject.entities.CompanyTable;
 import com.QR.QRProject.entities.MenuItemVariant;
 import com.QR.QRProject.entities.Order;
 import com.QR.QRProject.entities.OrderItem;
+import com.QR.QRProject.repositories.CompanyTableRepository;
 import com.QR.QRProject.repositories.MenuItemVariantRepository;
 import com.QR.QRProject.repositories.OrderRepository;
 import com.QR.QRProject.services.OrderService;
@@ -24,6 +26,9 @@ public class OrderServiceImpl implements OrderService {
 
     @Autowired
     private MenuItemVariantRepository menuItemVariantRepository;
+
+    @Autowired
+    private CompanyTableRepository companyTableRepository;
 
 
     @Override
@@ -66,8 +71,15 @@ public class OrderServiceImpl implements OrderService {
     @Override
     @Transactional
     public OrderDto save(OrderDtoIU orderDtoIU) {
+
+        CompanyTable table = companyTableRepository.findById(orderDtoIU.getTableId()).orElse(null);
+        assert table != null;
+
+
         Order order = new Order();
         order.setStatus("Pending");
+        order.setTable(table);
+        table.setAvailable(false);
 
         List<OrderItem> orderItems = orderDtoIU.getItems().stream().map(itemDto -> {
             OrderItem orderItem = new OrderItem();
@@ -123,5 +135,17 @@ public class OrderServiceImpl implements OrderService {
 
         return result;
     }
+
+    @Override
+    public boolean changeOrderStatus(Long orderId, String status) {
+        Order order = orderRepository.findById(orderId).orElse(null);
+        if (order != null) {
+            order.setStatus(status);
+            orderRepository.save(order);
+            return true;
+        }
+        return false;
+    }
+
 
 }

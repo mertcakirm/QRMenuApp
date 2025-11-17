@@ -8,4 +8,5 @@ import java.util.List;
 public interface CompanyTableService {
     List<CompanyTablesDto>  getCompanyTablesByCompanyId();
     TableDto saveTable(String tableName);
+    boolean clearTable(Long tableId);
 }

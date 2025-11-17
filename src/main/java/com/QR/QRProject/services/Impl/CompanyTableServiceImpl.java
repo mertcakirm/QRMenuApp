@@ -3,8 +3,10 @@ package com.QR.QRProject.services.Impl;
 import com.QR.QRProject.dtos.table.CompanyTablesDto;
 import com.QR.QRProject.dtos.table.TableDto;
 import com.QR.QRProject.entities.CompanyTable;
+import com.QR.QRProject.entities.Order;
 import com.QR.QRProject.entities.User;
 import com.QR.QRProject.repositories.CompanyTableRepository;
+import com.QR.QRProject.repositories.OrderRepository;
 import com.QR.QRProject.repositories.UserRepository;
 import com.QR.QRProject.services.CompanyTableService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -22,6 +24,8 @@ public class CompanyTableServiceImpl implements CompanyTableService {
     private CompanyTableRepository companyTableRepository;
     @Autowired
     private UserRepository userRepository;
+    @Autowired
+    private OrderRepository orderRepository;
 
     @Override
     public List<CompanyTablesDto> getCompanyTablesByCompanyId() {
@@ -62,6 +66,21 @@ public class CompanyTableServiceImpl implements CompanyTableService {
         dto.setTableName(result.getTableName());
 
         return dto;
+    }
+
+    @Override
+    public boolean clearTable(Long tableId) {
+        CompanyTable table = companyTableRepository.findById(tableId).orElse(null);
+        assert table != null;
+
+        table.setAvailable(true);
+
+        for(Order order : orderRepository.findByTableId(tableId)){
+            orderRepository.delete(order);
+        }
+        companyTableRepository.save(table);
+
+        return true;
     }
 
 }

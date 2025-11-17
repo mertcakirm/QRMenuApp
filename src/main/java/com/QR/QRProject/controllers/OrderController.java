@@ -27,4 +27,10 @@ public class OrderController {
         OrderDto savedOrder = orderService.save(orderDtoIU);
         return ResponseEntity.ok(savedOrder);
     }
+
+
+    @PutMapping("complete/{orderId}/status/{status}")
+    public boolean changeOrderStatus(@PathVariable Long orderId,@PathVariable String status) {
+        return orderService.changeOrderStatus(orderId,status);
+    }
 }
