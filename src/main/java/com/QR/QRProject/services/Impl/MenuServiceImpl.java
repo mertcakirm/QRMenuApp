@@ -45,7 +45,6 @@ public class MenuServiceImpl implements MenuService {
 
         User user = userRepository.findByEmail(email).orElseThrow(() -> new RuntimeException("User not found"));
 
-
         List<Menu> menuDb = menuRepository.findAllByCompanyId(user.getCompany().getId());
 
         return menuDb.stream()
@@ -59,7 +58,6 @@ public class MenuServiceImpl implements MenuService {
 
     @Override
     public MenuWithCompanyDto findAllByCompanyName(String companyName) {
-        // Optional ile çağırıyoruz
         Optional<Company> optionalCompany = companyRepository.findByName(companyName);
         if (optionalCompany.isEmpty()) return null;
 
